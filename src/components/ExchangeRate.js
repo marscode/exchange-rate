@@ -20,7 +20,7 @@ const amount = useSelector(getAmount);
 const currencyCode = useSelector(getCurrencyCode);
 const currencyData = useSelector(getCurrencyData);
 
-// const [currencyData, setCurrencyData] = useState({USD:1.0});
+
 
   // fetch the exchange rates each time currency code changes
   useEffect(() => {
