@@ -1,33 +1,33 @@
-import { useState, useCallback, useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { RateTable } from "./RateTable";
 import { CurrencyCodePicker } from "./CurrencyCodePicker";
 import { AmountField } from "./AmountField";
-import { getExchangeRates } from "../api";
+// access state using useSelector
+import { 
+  getAmount,  
+  getCurrencyCode,
+  getCurrencyData,
+  changeCurrencyCode,
+  supportedCurrencies 
+} from "../store/rates";
 
-const supportedCurrencies = ["USD", "EUR", "JPY", "CAD", "GBP", "MXN"];
 
 export function ExchangeRate() {
-  const [amount, setAmount] = useState("1.50");
-  const [currencyCode, setCurrencyCode] = useState("USD");
-  const [currencyData, setCurrencyData] = useState({ USD: 1.0 });
+  
+const dispatch = useDispatch();
+const amount = useSelector(getAmount);
+const currencyCode = useSelector(getCurrencyCode);
+const currencyData = useSelector(getCurrencyData);
+
+// const [currencyData, setCurrencyData] = useState({USD:1.0});
 
   // fetch the exchange rates each time currency code changes
   useEffect(() => {
-    getExchangeRates(currencyCode, supportedCurrencies).then((rates) => {
-      setCurrencyData(rates);
-    });
-  }, [currencyCode]);
-
-  const handleCurrencyCode = useCallback(
-    (e) => setCurrencyCode(e.target.value),
-    []
-  );
-
-  const handleAmountChange = useCallback((e) => {
-    let newAmount = e.target.value;
-    setAmount(newAmount);
+    dispatch(changeCurrencyCode(currencyCode));
   }, []);
 
+ 
   return (
     <>
       <section>
@@ -36,12 +36,12 @@ export function ExchangeRate() {
           <CurrencyCodePicker
             supportedCurrencies={supportedCurrencies}
             currencyCode={currencyCode}
-            onChange={handleCurrencyCode}
+         
           />
         </h1>
       </section>
       <section>
-        <AmountField amount={amount} onChange={handleAmountChange} />
+        <AmountField amount={amount}  />
       </section>
       <section>
         <RateTable currencyData={currencyData} amount={amount} />
